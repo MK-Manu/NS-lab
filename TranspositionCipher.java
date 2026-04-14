@@ -2,66 +2,75 @@ import java.util.*;
 
 public class TranspositionCipher {
 
+    // Get column order based on key
     static Integer[] getOrder(String key) {
-        Integer[] o = new Integer[key.length()];
-        for (int i = 0; i < key.length(); i++) o[i] = i;
-        Arrays.sort(o, Comparator.comparingInt(key::charAt));
-        return o;
+        Integer[] order = new Integer[key.length()];
+
+        for (int i = 0; i < key.length(); i++)
+            order[i] = i;
+
+        Arrays.sort(order, Comparator.comparingInt(key::charAt));
+        return order;
     }
 
-    static String process(String text, String key, boolean enc) {
-        int c = key.length(), r = text.length() / c + (text.length() % c == 0 ? 0 : 1);
-        char[][] m = new char[r][c];
-        Integer[] o = getOrder(key);
+    // Main process method (like other ciphers)
+    static String process(String text, String key, boolean encrypt) {
         StringBuilder res = new StringBuilder();
 
-        if (enc) {
-            for (int i = 0, k = 0; i < r; i++)
-                for (int j = 0; j < c; j++)
-                    m[i][j] = k < text.length() ? text.charAt(k++) : 'X';
+        text = text.toUpperCase().replaceAll(" ", "");
+        key = key.toUpperCase();
 
-            for (int i : o)
-                for (int j = 0; j < r; j++)
-                    res.append(m[j][i]);
+        int cols = key.length();
+        int rows = (text.length() + cols - 1) / cols;
+
+        char[][] matrix = new char[rows][cols];
+        Integer[] order = getOrder(key);
+
+        if (encrypt) {
+
+            // Fill matrix row-wise
+            int k = 0;
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    matrix[i][j] = (k < text.length()) ? text.charAt(k++) : 'X';
+                }
+            }
+
+            // Read column-wise based on key order
+            for (int i : order)
+                for (int j = 0; j < rows; j++)
+                    res.append(matrix[j][i]);
+
         } else {
-            for (int i = 0, k = 0; i < o.length; i++)
-                for (int j = 0; j < r; j++)
-                    m[j][o[i]] = text.charAt(k++);
 
-            for (char[] row : m)
+            // Fill column-wise based on key order
+            int k = 0;
+            for (int i = 0; i < cols; i++)
+                for (int j = 0; j < rows; j++)
+                    matrix[j][order[i]] = text.charAt(k++);
+
+            // Read row-wise
+            for (char[] row : matrix)
                 for (char ch : row)
                     res.append(ch);
         }
+
         return res.toString();
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("=== Transposition Cipher Program ===");
-        System.out.println("1. Single Encryption and Decryption");
-        System.out.println("2. Double Encryption and Decryption");
-        System.out.print("Enter your choice: ");
-        int ch = sc.nextInt(); sc.nextLine();
-
         System.out.print("Enter text: ");
-        String t = sc.nextLine().toUpperCase().replaceAll(" ", "");
+        String text = sc.nextLine();
 
-        if (ch == 1) {
-            System.out.print("Enter key: ");
-            String k = sc.nextLine().toUpperCase();
-            String e = process(t, k, true);
-            System.out.println("Encrypted: " + e);
-            System.out.println("Decrypted: " + process(e, k, false));
-        } else if (ch == 2) {
-            System.out.print("Enter first key: ");
-            String k1 = sc.nextLine().toUpperCase();
-            System.out.print("Enter second key: ");
-            String k2 = sc.nextLine().toUpperCase();
+        System.out.print("Enter key: ");
+        String key = sc.nextLine();
 
-            String e = process(process(t, k1, true), k2, true);
-            System.out.println("Encrypted: " + e);
-            System.out.println("Decrypted: " + process(process(e, k2, false), k1, false));
-        } else System.out.println("Invalid choice!");
+        String enc = process(text, key, true);
+        String dec = process(enc, key, false);
+
+        System.out.println("Encrypted Text: " + enc);
+        System.out.println("Decrypted Text: " + dec);
     }
 }
