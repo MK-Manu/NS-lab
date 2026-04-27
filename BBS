@@ -8,7 +8,7 @@ public class BBS {
 
     BBS(int b){
         do p=BigInteger.probablePrime(b,r);
-        while(!p.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3)));
+        while(!p.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3))); 
 
         do q=BigInteger.probablePrime(b,r);
         while(!q.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3)));
