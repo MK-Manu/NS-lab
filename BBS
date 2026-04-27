@@ -1,0 +1,43 @@
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
+public class BBS {
+
+    BigInteger p,q,m,s;
+    SecureRandom r=new SecureRandom();
+
+    BBS(int b){
+        do p=BigInteger.probablePrime(b,r);
+        while(!p.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3)));
+
+        do q=BigInteger.probablePrime(b,r);
+        while(!q.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3)));
+
+        m=p.multiply(q);
+
+        do s=new BigInteger(b*2,r);
+        while(!s.gcd(m).equals(BigInteger.ONE));
+    }
+
+    int bit(){
+        s=s.modPow(BigInteger.valueOf(2),m);
+        return s.mod(BigInteger.valueOf(2)).intValue();
+    }
+
+    BigInteger num(int n){
+        BigInteger res=BigInteger.ZERO;
+        for(int i=0;i<n;i++)
+            res=res.shiftLeft(1).or(BigInteger.valueOf(bit()));
+        return res;
+    }
+
+    public static void main(String[] a){
+        BBS b=new BBS(64);
+
+        System.out.println("Generated Random Bits:");
+        for(int i=0;i<20;i++) System.out.print(b.bit()+" ");
+
+        System.out.println("\n\nGenerated Random Number (16 bits):");
+        System.out.println(b.num(16));
+    }
+}
