@@ -5,7 +5,7 @@ public class RSA {
 
     BigInteger p,q,n,phi,e,d;
     SecureRandom r=new SecureRandom();
-
+ 
     RSA(){
         p=BigInteger.probablePrime(1024,r);
         q=BigInteger.probablePrime(1024,r);
