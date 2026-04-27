@@ -1,7 +1,7 @@
 import java.math.BigInteger;
 import java.util.Scanner;
 
-public class FE {
+public class FE { 
 
     static BigInteger phi(BigInteger n){
         BigInteger r=n,i=BigInteger.valueOf(2),t=n;
