@@ -7,7 +7,7 @@ public class DH {
         return n.isProbablePrime(10);
     }
 
-    public static void main(String[] a){
+    public static void main(String[] a){ 
 
         Scanner sc=new Scanner(System.in);
 
