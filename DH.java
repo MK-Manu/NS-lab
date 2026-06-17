@@ -15,7 +15,7 @@ public class DH {
         BigInteger p=sc.nextBigInteger();
 
         if(!isPrime(p)){
-            System.out.println("\nKey Exchange Failed! Shared key is Not same");
+            System.out.println("\nError: p must be a prime number.");
             return;
         }
 
